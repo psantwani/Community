@@ -1,0 +1,33 @@
+{
+  "name": "insane-peanut",
+  "version": "0.0.0",
+  "description": "No description",
+  "author": "Piyush Santwani",
+  "private": true,
+  "main": "node_modules/expo/AppEntry.js",
+  "devDependencies": {
+    "babel-preset-expo": "^7.0.0"
+  },
+  "scripts": {
+    "lint": "yarn eslint src/**/*.js --fix"
+  },
+  "dependencies": {
+    "expo": "^36.0.0",
+    "jsx-to-string": "^1.4.0",
+    "react": "16.9.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.1.tar.gz",
+    "react-native-autocomplete-input": "4.1.0",
+    "react-native-elements": "1.2.7",
+    "react-native-gesture-handler": "^1.0.0",
+    "react-native-google-places-autocomplete": "1.4.0",
+    "react-native-paper": "3.1.1",
+    "react-native-reanimated": "^1.0.0-alpha",
+    "react-native-router-flux": "4.0.6",
+    "react-native-screens": "^1.0.0-alpha",
+    "react-native-webview": "8.0.2",
+    "react-navigation": "4.0.10",
+    "react-navigation-deprecated-tab-navigator": "*",
+    "react-navigation-stack": "1.10.3",
+    "react-navigation-tabs": "2.6.2"
+  }
+}
