@@ -1,0 +1,43 @@
+1. Simple authentication.
+2. Book (id, name, description, cover photo, price)
+3. User (id, name, email, phone)
+4. Locations (id, title, lat, long, description)
+5. Item (book_id, user_id, location_id, available)
+6. Simple listing based on user location
+7. Order (item_id, payment_link, status)
+
+Postgres + postgis = https://www.enterprisedb.com/thank-you-downloading-postgresql?anid=1257092
+
+ALTER TABLE users ALTER COLUMN id SET DEFAULT uuid_generate_v4();
+
+SELECT AddGeometryColumn('locations', 'geom', 4326, 'POINT', 2);
+UPDATE locations SET geom = ST_SetSRID(ST_MakePoint(longitude, latitude), 4326); // create a trigger
+
+SELECT * FROM locations WHERE ST_DWithin(geom::geography, ST_SetSRID(ST_MakePoint(77.1025, 28.7041),4326)::geography, 1743 * 1000) // radius in kms
+
+CREATE OR REPLACE FUNCTION make_spatial_point() RETURNS trigger AS '
+BEGIN
+NEW.geom := ST_SetSRID(ST_MakePoint(NEW.longitude, NEW.latitude), 4326);
+RETURN NEW;
+END;
+' 
+LANGUAGE plpgsql;
+
+CREATE TRIGGER set_spatial_point BEFORE INSERT OR UPDATE ON locations FOR EACH ROW EXECUTE PROCEDURE make_spatial_point();
+
+CREATE OR REPLACE FUNCTION update_timestamp() RETURNS trigger AS '
+BEGIN
+NEW.timestamp := now();
+RETURN NEW;
+END;
+' 
+LANGUAGE plpgsql;
+
+CREATE TRIGGER set_timestamp BEFORE INSERT OR UPDATE ON orders FOR EACH ROW EXECUTE PROCEDURE update_timestamp();
+
+---------
+TODO: 
+
+Item should have weekday/weekend pickup time
+Order should have weekday/weekend delivery time
+Order should have price field too
