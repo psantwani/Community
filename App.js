@@ -8,7 +8,7 @@ import Routes from "./Routes";
 export default class App extends Component {
 	constructor(props){
 		super(props);
-		YellowBox.ignoreWarnings(["Warning: componentWillReceiveProps", "VirtualizedLists", "Warning: componentWillMount"]);
+		// YellowBox.ignoreWarnings(["Warning: componentWillReceiveProps", "VirtualizedLists", "Warning: componentWillMount"]);
 	}
 	render() {
 		return (

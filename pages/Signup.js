@@ -9,14 +9,21 @@ import {
 } from "react-native";
 
 import Logo from "../components/Logo";
+import config from "../config";
 
 export default class Signup extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {
+			email: "",
+			name: "",
+			password: "",
+			confirmation: "",
+			mobile: ""
+		};
 	}
 
-	clickEventListener() {
+	async clickEventListener() {
 		if (
 			this.state.email != null &&
 			this.state.email != "" &&
@@ -32,6 +39,37 @@ export default class Signup extends Component {
 			if (this.state.password != this.state.confirmation) {
 				Alert.alert("Alert", "Password and confirmation do not match.");
 			} else {
+
+				try {
+					let response = await fetch(`${config.api.host}/register`, {
+					  method: "POST",
+					  headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json"
+					  },
+					  body: JSON.stringify({
+						email: this.state.email,
+						password: this.state.password,
+						confirmation: this.state.confirmation,
+						custom_data: {
+							name: this.state.name,
+							phone: this.state.mobile
+						}
+					  })
+					});
+					
+					if (response.ok) {
+					  let responseJson = await response.json();
+					  this.setState({ userId: responseJson.id });
+						this.props.navigation.navigate("Home");
+					} else {
+						Alert.alert("Signup Failed", response.statusText);
+					}
+				  } catch (error) {
+					console.error(error);
+					Alert.alert("Signup Failed", "Something went wrong");
+				  }
+
 				Alert.alert("Success", "Login with your email and password.");
 				this.props.navigation.navigate("Login");
 			}

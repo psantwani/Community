@@ -9,6 +9,7 @@ import {
 } from "react-native";
 
 import { SearchBar, Card, Button, Icon } from "react-native-elements";
+import config from "../config";
 
 export default class Feed extends Component {
 	static navigationOptions = ({ navigation }) => ({
@@ -49,7 +50,8 @@ export default class Feed extends Component {
 	}
 
 	makeRemoteRequest = () => {
-		const url = `https://ec04a1bd.ngrok.io/feed?latitude=23.279645&longitude=77.458415`;
+		const url = `${config.api.host}/feed?latitude=23.279645&longitude=77.458415`;
+		console.log("url", url);
 		this.setState({ loading: true });
 
 		fetch(url)

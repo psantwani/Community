@@ -8,6 +8,7 @@ import {
 } from "react-native";
 
 import { SearchBar, Card, Button } from "react-native-elements";
+import config from "../config";
 
 export default class Orders extends Component {
 	constructor(props) {
@@ -31,7 +32,7 @@ export default class Orders extends Component {
 	}
 
 	makeRemoteRequest = () => {
-		const url = `https://ec04a1bd.ngrok.io/orders`;
+		const url = `${config.api.host}/orders`;
 		this.setState({ loading: true });
 
 		fetch(url)

@@ -28,6 +28,7 @@
     "react-navigation": "4.0.10",
     "react-navigation-deprecated-tab-navigator": "*",
     "react-navigation-stack": "1.10.3",
-    "react-navigation-tabs": "2.6.2"
+    "react-navigation-tabs": "2.6.2",
+    "sync-storage": "^0.4.2"
   }
 }

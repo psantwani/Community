@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import Autocomplete from "react-native-autocomplete-input";
 import { ScrollView } from "react-native-gesture-handler";
+import config from "../config";
 
 export default class AddItem extends Component {
 	constructor(props) {
@@ -48,7 +49,7 @@ export default class AddItem extends Component {
 			return this.state.books;
 		}
 
-		let URL = `https://ec04a1bd.ngrok.io/books/search?query=${query}`;
+		let URL = `${config.api.host}/books/search?query=${query}`;
 		fetch(URL)
 			.then(response => response.json())
 			.then(responseJson => {

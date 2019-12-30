@@ -25,8 +25,6 @@ export default class AddLocation extends React.Component {
 		headerStyle: { height: 80, paddingTop: 20 }
 	};
 
-	
-
 	render() {		
 		return (
 			<View style={styles.container}>
@@ -81,6 +79,14 @@ export default class AddLocation extends React.Component {
 		  placeholderTextColor="black"
           renderDescription={row => row.description} // custom description render
           onPress={(data, details = null) => {
+			Alert.alert(JSON.stringify({
+				id: details.id,
+				place_id: details.place_id,
+				name: details.name,				
+				latitude: details.geometry.location.lat,
+				longitude: details.geometry.location.lng,
+				formatted_address: details.formatted_address
+			}));
 			this.setState({location: {
 				id: details.id,
 				place_id: details.place_id,
@@ -94,7 +100,6 @@ export default class AddLocation extends React.Component {
             return ''; // text input default value
           }}
           query={{
-            // available options: https://developers.google.com/places/web-service/autocomplete
             key: 'AIzaSyAmedqvwxJxCRqhtNZCmAkzEqjhlcjQuOM',
             language: 'en', // language of the results            
           }}
