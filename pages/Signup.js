@@ -61,7 +61,7 @@ export default class Signup extends Component {
 					if (response.ok) {
 					  let responseJson = await response.json();
 					  this.setState({ userId: responseJson.id });
-						this.props.navigation.navigate("Home");
+						this.props.navigation.navigate("Login");
 					} else {
 						Alert.alert("Signup Failed", response.statusText);
 					}
