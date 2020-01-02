@@ -21,6 +21,16 @@ export default class ItemDetail extends Component {
 		this.props.navigation.navigate("PaymentWebView");
 	}
 
+	htmlEntities(html) {
+		let str = html.replace(/<[^>]*>?/gm, '');
+		if(!str){
+		  return "No description available."
+		}
+		
+		return str;
+	  }
+	  
+
 	render() {
 		const {
 			id,
@@ -38,7 +48,8 @@ export default class ItemDetail extends Component {
 					</View>
 					<View style={styles.separator}></View>
 					<View style={{ flex: 1, marginHorizontal: 30 }}>
-						<Text style={styles.description}>{description}</Text>
+						<Text style={styles.description}>{this.htmlEntities(
+							description)}</Text>
 					</View>
 					<View style={styles.separator}></View>
 					<View style={styles.addToCarContainer}>
@@ -46,7 +57,7 @@ export default class ItemDetail extends Component {
 							style={styles.shareButton}
 							onPress={() => this.clickEventListener()}
 						>
-							<Text style={styles.shareButtonText}>Pay{` ${price}`}</Text>
+							<Text style={styles.shareButtonText}>Pay  {"\u20B9"} {`${price}`}</Text>
 						</TouchableOpacity>
 					</View>
 				</ScrollView>

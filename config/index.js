@@ -1,6 +1,6 @@
 const config = {
   api: {
-    host: 'https://2ab93a94.ngrok.io'
+    host: 'https://f48b752a.ngrok.io'
   }
 };
 

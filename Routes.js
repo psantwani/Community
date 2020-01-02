@@ -18,7 +18,7 @@ export default class Routes extends Component {
   }
 
   async componentDidMount() {
-	// await this.logout(); 	
+	  // await this.logout(); 	
     AsyncStorage.getItem("is_logged_in").then(async isLoggedIn => {      
       let screen;
       if (isLoggedIn === "true") {

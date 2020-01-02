@@ -59,11 +59,11 @@ app.use((req, res, next) => {
 const getErrorMessage = (error) => {
   if (error instanceof InvalidRequest) {
     console.log(error);
-    return `Invalid request: ${error.data.error}`;
+    return {error: `Invalid request: ${error.data.error}`};
   } if (error instanceof Unauthorized) {
-    return 'Unauthorized!';
+    return {error: 'Unauthorized!'};
   }
-  return `Something went wrong: ${error.toString()}`;
+  return {error: `Something went wrong: ${error.toString()}`};
 };
 
 app.listen(3000);
@@ -206,6 +206,20 @@ app.post('/book', utils.checkIfLoggedIn, async (req, res) => {
   }
 });
 
+app.post('/book/:id', utils.checkIfLoggedIn, async (req, res) => {
+  console.log('---------');
+  console.log('Book API hit ' + req.params.id);
+  try {
+    const id = await db.createBookIfNotExists(req.params.id);
+    console.log("id", id);
+    res.status(200).send({
+      id,
+    });
+  } catch (error) {
+    res.status(500).send(getErrorMessage(error));
+  }
+});
+
 app.post('/item', utils.checkIfLoggedIn, async (req, res) => {
   console.log('---------');
   console.log('Item API hit');
@@ -319,8 +333,24 @@ app.get('/books/search', utils.checkIfLoggedIn, async (req, res) => {
   console.log('Books search API hit');
   const { query } = req.query;
   try {
-    const books = await db.booksSearchUsingThirdParty(query) || [];
+    let books = await db.booksSearchUsingThirdParty(query) || [];
+    if(!Array.isArray(books)){
+      books = [books];
+    }
     res.status(200).send({ books });
+  } catch (error) {
+    res.status(500).send(getErrorMessage(error));
+  }
+});
+
+app.get('/user/locations', utils.checkIfLoggedIn, async (req, res) => {
+  console.log('---------');
+  console.log('Books search API hit');
+  const { query } = req.query;
+  try {
+    const userId = req.session.userId;
+    const locations = await db.getUserLocations(userId) || [];
+    res.status(200).send({ locations });
   } catch (error) {
     res.status(500).send(getErrorMessage(error));
   }

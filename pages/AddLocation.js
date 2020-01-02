@@ -5,9 +5,11 @@ import {
 	StyleSheet,
 	TextInput,
 	TouchableOpacity,
-	Alert
+	Alert,
+	ActivityIndicator
 } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import config from "../config";
 
 export default class AddLocation extends React.Component {
 	constructor(props) {
@@ -16,8 +18,14 @@ export default class AddLocation extends React.Component {
 		this.state = {
 			location: {},
 			address: "",
-			landmark: ""
+			landmark: "",
+			loading: true,
+			closeAutoSuggestion: true,
 		};
+	}
+
+	componentDidMount(){
+		this.setState({loading: false});
 	}
 
 	static navigationOptions = {
@@ -26,6 +34,14 @@ export default class AddLocation extends React.Component {
 	};
 
 	render() {		
+		console.log("this.state.closeAutoSuggestion", this.state.closeAutoSuggestion);
+		if (this.state.loading) {
+			return (
+			  <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+				<ActivityIndicator />
+			  </View>
+			);
+		  }
 		return (
 			<View style={styles.container}>
 				<View style={styles.header}>
@@ -62,10 +78,45 @@ export default class AddLocation extends React.Component {
 		);
 	}
 
-	clickEventListener = () => {
-		Alert.alert("state", JSON.stringify(this.state));
-		this.props.navigation.goBack();
+	clickEventListener = async() => {
+		try {
+			await this.insertLocation();	  	  
+			this.props.navigation.goBack();
+			this.props.navigation.state.params.onRefresh();
+		  } catch (error) {
+			console.log(error);
+		  }		
 	}
+
+	insertLocation = async () => {
+		return new Promise(async (resolve, reject) => {
+		  this.setState({ loading: true });
+		  const { location, address, landmark } = this.state;
+		  const { name, latitude, longitude } = location;		  
+	
+		  console.log("inserting location");
+		  let response = await fetch(`${config.api.host}/location`, {
+			method: "POST",
+			headers: {
+			  Accept: "application/json",
+			  "Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+			  title: name,
+			  description: address,
+			  latitude,
+			  longitude
+			})
+		  });
+	
+		  if (response.ok) {			
+			return resolve("done");
+		  } else {
+			Alert.alert("Oops", "Something went wrong. Try again later.");
+			return reject("done");
+		  }
+		});
+	  };
 	
 	renderGoogleAutoComplete(){
 		return (
@@ -77,16 +128,10 @@ export default class AddLocation extends React.Component {
           listViewDisplayed="auto" // true/false/undefined
 		  fetchDetails={true}
 		  placeholderTextColor="black"
-          renderDescription={row => row.description} // custom description render
+		  renderDescription={row => row.description} // custom description render
+		  onChangeText={() => this.setState({ closeAutoSuggestion: false })}
           onPress={(data, details = null) => {
-			Alert.alert(JSON.stringify({
-				id: details.id,
-				place_id: details.place_id,
-				name: details.name,				
-				latitude: details.geometry.location.lat,
-				longitude: details.geometry.location.lng,
-				formatted_address: details.formatted_address
-			}));
+			this.setState({ closeAutoSuggestion: true });			
 			this.setState({location: {
 				id: details.id,
 				place_id: details.place_id,
@@ -114,7 +159,7 @@ export default class AddLocation extends React.Component {
 			listView:{
 				zIndex: 9999,				
 				color: "white",
-				backgroundColor: "#F0FFFF"
+				backgroundColor: "#F0FFFF",
 			},
 			row:{
 				color: "white"
